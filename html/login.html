@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <script>
+    var xhr = new XMLHttpRequest();
+        var response;
+        xhr.onreadystatechange = callback;
+        function register() 
+        {
+            window.location.href="register.html"
+        }
+        function login() 
+        {
+            if (formname.username.value == "" || formname.password.value == "") {
+                alert('账号或密码不得为空！')
+            }
+            else {
+                if (xhr != null) {
+                    var userdata = readdata();
+                    xhr.open("POST", "http://127.0.0.1:9990/web/login", true);
+                    xhr.setRequestHeader('Content-type', 'application/json');
+                    xhr.send(userdata);
+                }
+            }
+        }
+        function callback()
+        {
+            if (xhr.readyState == 4) 
+            {
+                var response = JSON.parse(xhr.responseText);
+                if (xhr.status == 200) 
+                {
+                    if (response.errcode == 0)
+                    {
+                        window.location.href="main.html";
+                        sessionStorage.setItem("userx",JSON.stringify(response.temp))
+                    }   
+                }
+            else { alert(response.errmsg) }
+            }
+         }   
+        function readdata() {
+            var userdata0 = { 'username': " ", 'password': " " };
+            userdata0.username = formname.username.value;
+            userdata0.password = formname.password.value;
+            return JSON.stringify(userdata0);
+        }
+    </script>
+</head>
+<body>
+    <div class="login">
+        <p id="title">统一身份认证</p>
+        <form  name="formname">
+            用户名<br>
+            <input type="text" name="username" id="username">
+            <br>
+            密码<br>
+            <input type="password" name="password">
+            <br><br>
+            <button type="button" id="button1" onclick="login()" style="cursor: pointer;">登录</button>
+            <button type="button" onclick="register()">注册</button>
+        </form>
+    </div>
+    <p id="text"></p>
+</body>
+</html>

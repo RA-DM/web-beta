@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>注册页面</title>
+    <script>
+    var xhr = new XMLHttpRequest();
+        var response;
+        xhr.onreadystatechange = callback;
+        function callback()
+        {
+            if (xhr.readyState == 4) 
+            {
+                var response = JSON.parse(xhr.responseText);
+                if (xhr.status == 200) 
+                {
+                    if (response.errcode == 0)
+                    {
+                        alert("您已成功注册：3秒后将返回登陆界面")
+                        setTimeout(window.location.href = "login.html",3000);
+                    }   
+                }
+            else { alert(response.errmsg) }
+            }
+         }   
+        function regist() 
+        {
+            if (formname.username.value == "" || formname.password.value == "") {
+                alert('账号或密码不得为空！')
+            }
+            else {
+                if (xhr != null) {
+                    var userdata = readdata();
+                    xhr.open("POST", "http://127.0.0.1:9990/web/regist", true);
+                    xhr.setRequestHeader('Content-type', 'application/json');
+                    xhr.send(userdata);
+                }
+            }
+        }
+        function returner()
+        {
+            window.location.href="login.html"
+        }
+        function readdata() 
+        {
+            var userdata0 = { 'username': " ", 'password': " " };
+            userdata0.username = formname.username.value;
+            userdata0.password = formname.password.value;
+            return JSON.stringify(userdata0);
+        }
+    </script>
+</head>
+<body>
+    <div id="logo"></div>
+    <div class="login">
+        <p id="title">统一身份注册</p>
+        <form  name="formname">
+            用户名<br>
+            <input type="text" name="username">
+            <br>
+            密码<br>
+            <input type="password" name="password">
+            <br><br>
+            <button type="button" id="button1" onclick="returner()">返回</button>
+            <button type="button" onclick="regist()">注册</button>
+        </form>
+    </div>
+</body>
+</html>

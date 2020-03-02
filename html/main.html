@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf8" />
+    <style>
+ 
+    </style>
+</head>
+<body>
+    <div style="float:right">
+        <p>欢迎你，</p>
+        <strong id="uNme">游客</strong>            
+         <script>
+          var uName=JSON.parse(sessionStorage.getItem("userx"));
+         document.getElementById("uNme").innerHTML=uName
+         </script>
+    </div>
+    <div class="center">
+        <h1 >留言板</h1>
+    <form action="/post" method="post" name="formname2" id="myForm">
+        <table>
+            <tr>
+            <th>主题：</th>
+            <td>
+            <input type="text" size="20" name="topic" >
+            </td>
+            </tr>
+            <tr>
+                <th>内容：</th>
+                <td>
+                    <textarea rows="9" cols="51" name="comment" style="resize: none;"></textarea>
+                </td>
+            </tr>
+        </table>
+        <p><button type="button" id="sendButton" style="cursor: pointer; " onclick=sendmessage()>提交</button></p>
+    </form>
+    </div>
+    <div style="bottom:px;">
+        <p id="theMessage" style="bottom:0px"></p>
+        <p id="demo"></p>
+    </div>    
+    <script>
+        var flag={};
+        var myvar=setInterval(function(){showMessage()},1000);
+        function showMessage()
+        {
+        var nxhr=null;
+        var dataGet=null;
+        nxhr=new XMLHttpRequest();
+        nxhr.open("POST","http://127.0.0.1:9990/web/get",true);
+        nxhr.setRequestHeader('content-type','application/json');
+        nxhr.onreadystatechange=function()
+        {
+            if(nxhr.readyState==4)
+            {
+            if(nxhr.status==200)
+            {
+            dataGet = nxhr.responseText; 
+            document.getElementById("theMessage").innerHTML=dataGet;
+            };
+        }
+        }
+        }
+        var xhr = new XMLHttpRequest();
+            var response;
+            function sendmessage() 
+            {
+                if (sessionStorage.length=="")
+                {
+                    document.getElementById("sendButton").disabled=true;
+                    alert('您处于游客模式，不能发表留言，请登录/注册')
+                    setTimeout(function(){document.getElementById("sendButton").disabled=false},1000)
+                }
+                else if (formname2.comment.value == "") 
+                {
+                    alert('留言内容不能为空')
+                }
+                   else if (xhr != null) 
+                    {
+                        var userdata = readdata();
+                        xhr.open("POST", "http://127.0.0.1:9990/web/send", true);
+                        xhr.setRequestHeader('Content-type', 'application/json');
+                        xhr.send(userdata);
+                    }
+            }
+            xhr.onreadystatechange = callback;
+            function callback()
+            {
+                if (xhr.readyState == 4) {
+                    if (xhr.status == 200) {
+                        var response = JSON.parse(xhr.responseText);
+                        if (response.errcode == 0)
+                        {
+                            alert(response.errmsg);
+                            document.getElementById("myForm").reset();
+                        }
+                    }
+                }
+            }
+    
+    
+            function readdata() {
+                var userdata0 = { 'topic': " ", 'comment': " " ,'user':" "};
+                userdata0.topic = formname2.topic.value;
+                userdata0.comment = formname2.comment.value;
+                userdata0.user=JSON.parse(sessionStorage.getItem("userx");
+                return JSON.stringify(userdata0);
+            }   
+
+
+
+            var myVar2 = setInterval(function(){ myTimer() }, 1000);
+
+        function myTimer() {
+            var d = new Date();
+            var t = d.toLocaleTimeString();
+            document.getElementById("demo").innerHTML = t;
+            }
+</script>
+</body>
+
+</html>
